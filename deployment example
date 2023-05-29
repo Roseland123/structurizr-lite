@@ -1,0 +1,44 @@
+workspace {
+
+    model {
+        softwareSystem = softwareSystem "Software System" {
+            person = container "User"
+            api = container "Service API" {
+                -> person "Pricing risk"
+            }
+            database = container "Quant library" {
+                -> api "Polling data"
+            }
+        }
+
+        production = deploymentEnvironment "Production" {
+            deploymentNode "APAC Server" {
+                containerInstance api
+                deploymentNode "Database Server" {
+                    containerInstance database
+                }
+            }
+            deploymentNode "EMEA Server" {
+                containerInstance api
+            }
+            deploymentNode "AMER Server" {
+                containerInstance api
+            }
+            deploymentNode "Cloud Server" {
+                containerInstance person
+                containerInstance api
+                deploymentNode "Database Server" {
+                    containerInstance database
+                }
+            }
+        }
+    }
+
+    views {
+        deployment * production {
+            include *
+            autolayout
+        }
+    }
+
+}
